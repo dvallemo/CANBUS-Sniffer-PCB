@@ -1,6 +1,6 @@
-# CANBUS Sniffer
+# CANBUS Sniffer PCB
 
-A compact USB-to-CAN interface built around an STM32 microcontroller and CAN transceiver for learning high-speed PCB design, USB routing, power supply design, and embedded hardware development.
+A compact **USB-to-CAN Bus interface** designed around an **STM32F0 microcontroller** and a **CAN transceiver**. This project was built to practice professional PCB design techniques from schematic capture through PCB layout while following industry design practices.
 
 **Version:** V1.0.0
 
@@ -8,40 +8,45 @@ A compact USB-to-CAN interface built around an STM32 microcontroller and CAN tra
 
 # Overview
 
-The purpose of this project is to design a complete CAN Bus Sniffer PCB from schematic capture through PCB layout using professional design practices.
+The goal of this project was to design a complete CAN Bus Sniffer PCB using KiCad while applying professional hardware engineering methodologies.
 
-The board receives power over USB Type-C, regulates the voltage to 3.3V, communicates over a CAN bus transceiver, and provides programming/debugging through an SWD interface.
+The board receives power over USB Type-C, regulates the voltage to 3.3V, communicates over a CAN transceiver, and provides an SWD interface for programming and debugging.
 
-Rather than simply creating a functional board, the primary goal was to practice professional PCB design methodologies including:
+Rather than only creating a working PCB, this project focused heavily on layout quality, manufacturability, and signal integrity.
 
+Topics practiced include:
+
+- PCB floorplanning
 - Component placement
-- Differential pair routing
+- USB differential pair routing
+- Controlled impedance routing
+- Four-layer PCB stackup
 - Power distribution
 - Ground plane implementation
 - Decoupling capacitor placement
-- Controlled impedance routing
+- EMI reduction techniques
+- Design Rule Checks (DRC)
 - Design for Manufacturability (DFM)
 - Design for Assembly (DFA)
-- Design Rule Checking (DRC)
 
 ---
 
 # Features
 
-- USB Type-C power input
-- STM32 microcontroller
-- CAN Bus transceiver
-- USB Full-Speed differential pair routing
-- 3.3V LDO regulator
-- Reverse polarity protection
-- TVS protection
-- Power indication LEDs
-- CAN activity LEDs
-- SWD programming header
-- RESET pushbutton
-- BOOT pushbutton
-- Four mounting holes
-- Four-layer PCB
+- USB Type-C Interface
+- STM32F0 Microcontroller
+- CAN Bus Transceiver
+- USB 2.0 Full-Speed Differential Pair
+- 3.3V Linear Regulator
+- TVS Protection
+- Reverse Polarity Protection
+- Power LEDs
+- CAN Activity LEDs
+- SWD Programming Header
+- RESET Button
+- BOOT Button
+- Four Mounting Holes
+- Four-Layer PCB
 
 ---
 
@@ -49,91 +54,91 @@ Rather than simply creating a functional board, the primary goal was to practice
 
 | Item | Specification |
 |------|---------------|
-| MCU | STM32F0 Series |
+| Microcontroller | STM32F0 Series |
 | CAN Transceiver | SN65HVD230 Compatible |
 | USB | USB Type-C (USB 2.0 Full Speed) |
 | Input Voltage | 5V USB |
-| Logic Voltage | 3.3V |
+| Output Voltage | 3.3V |
 | PCB Layers | 4 |
 | PCB Thickness | 1.6 mm |
-| Differential Pair | USB D+ / D− |
-| Mounting | 4 Mounting Holes |
+| USB Routing | Controlled Impedance Differential Pair |
 
 ---
 
 # PCB Stackup
 
-Layer 1
+### Layer 1
 - Components
 - Signal Routing
 - USB Differential Pair
 
-Layer 2
+### Layer 2
 - Solid Ground Plane
 
-Layer 3
+### Layer 3
 - Solid Ground Plane
 
-Layer 4
+### Layer 4
 - Signal Routing
-- Power Distribution
+- Power Routing
 
-Using two continuous internal ground planes provides:
+Using two dedicated internal ground planes provides:
 
-- Low impedance return paths
-- Improved signal integrity
+- Continuous return paths
 - Reduced EMI
+- Improved signal integrity
+- Lower ground impedance
 - Better high-frequency performance
-- Easier routing of USB differential pairs
+- Improved power distribution
 
 ---
 
-# Design Decisions
+# Engineering Design Decisions
 
 ## USB Type-C
 
-A USB Type-C connector was selected for modern compatibility.
+USB Type-C was selected for modern compatibility and ease of use.
 
-USB CC resistors were included to properly advertise the board as a USB device.
+USB CC pull-down resistors were implemented according to the USB Type-C specification to correctly identify the board as a USB device.
 
-The USB D+ and D− signals were routed as a controlled impedance differential pair using KiCad's differential pair router.
+The USB D+ and D− lines were routed as a differential pair using KiCad's differential pair router.
 
-Design considerations included:
+Special attention was given to:
 
 - Matched trace lengths
 - Constant spacing
+- Controlled impedance
 - Minimal discontinuities
-- Short routing from connector to ESD protection
-- Minimal via usage
+- Smooth routing
+- Short path between the connector and downstream circuitry
 
 ---
 
 ## Differential Pair Routing
 
-USB Full-Speed operates at 12 Mbps.
+Although USB Full-Speed (12 Mbps) is more forgiving than USB High-Speed, the layout follows professional differential routing practices.
 
-Although USB Full-Speed is less demanding than USB High-Speed, good routing practices were still followed:
+Design considerations included:
 
-- Controlled impedance differential pair
+- Constant differential spacing
 - Matched lengths
-- Constant spacing
-- Smooth 45° bends
-- Short routing distance
+- 45° bends
 - Minimal skew
+- No unnecessary vias
+- Short routing distance
+- Continuous reference plane underneath the pair
 
 ---
 
-## Power Supply
+## Power Architecture
 
-The board receives 5V from USB.
-
-Power then passes through:
+Power flow:
 
 USB Type-C
 
 ↓
 
-Protection
+Protection Circuit
 
 ↓
 
@@ -147,70 +152,113 @@ Filtering
 
 STM32 + CAN Transceiver
 
-Separate filtering and decoupling were added for improved power integrity.
+Wide power traces were used where appropriate to reduce voltage drop and improve current handling.
 
 ---
 
-## Decoupling Strategy
+## Power Integrity
 
-Each power pin is locally decoupled using ceramic capacitors placed as close as possible to the IC supply pins.
+Each power pin is locally decoupled with ceramic capacitors placed as close as possible to the corresponding IC supply pins.
 
-Goals:
+This reduces:
 
-- Reduce switching noise
-- Supply transient current
-- Improve power stability
-- Reduce EMI
-
----
-
-## CAN Interface
-
-The CAN transceiver converts the STM32 CAN peripheral into differential CANH/CANL signals.
-
-Features include:
-
-- Differential signaling
-- CAN termination option
-- Noise immunity
-- Automotive compatible interface
+- Supply noise
+- Voltage ripple
+- Transient voltage drops
+- EMI
 
 ---
 
 ## Grounding Strategy
 
-The design uses:
+The board utilizes:
 
-- Internal Ground Plane (Layer 2)
-- Internal Ground Plane (Layer 3)
+- Layer 2 Solid Ground Plane
+- Layer 3 Solid Ground Plane
 - Top Ground Pour
 - Bottom Ground Pour
-- Via stitching
+- Ground stitching vias
 
-Benefits include:
+This creates low impedance return paths and improves signal integrity throughout the design.
 
-- Continuous return paths
-- Lower ground impedance
-- Improved EMC
-- Better thermal performance
-
-The STM32 exposed ground pad is connected directly into the internal ground planes through a dedicated thermal via.
+The exposed thermal pad underneath the STM32 is connected directly into the internal ground planes through a thermal via.
 
 ---
 
-# PCB Design Considerations
+## CAN Interface
 
-During layout the following practices were used:
+The CAN transceiver converts the MCU CAN peripheral into differential CANH and CANL signals suitable for automotive communication.
+
+The layout emphasizes:
+
+- Short routing
+- Clean return paths
+- Differential signaling
+- Noise immunity
+
+---
+
+## Crystal Oscillator
+
+The crystal and its load capacitors were placed immediately adjacent to the MCU oscillator pins.
+
+This minimizes:
+
+- Loop area
+- EMI susceptibility
+- Clock jitter
+
+---
+
+## Component Placement
+
+Components were grouped by function:
+
+### USB Section
+
+- USB Connector
+- ESD Protection
+- CC Resistors
+
+### Power Section
+
+- Protection
+- LDO
+- Filtering
+- LEDs
+
+### CAN Section
+
+- CAN Connector
+- CAN Transceiver
+- Termination Components
+
+### MCU Section
+
+- STM32
+- Crystal
+- Decoupling
+- Programming Header
+
+Keeping functional blocks together improves routing quality and simplifies debugging.
+
+---
+
+# PCB Design Practices
+
+The layout follows several common PCB design guidelines:
 
 - Functional component grouping
+- Short decoupling connections
 - Short crystal routing
-- Short decoupling paths
+- Controlled impedance USB routing
 - Wide power traces
-- Differential pair routing
 - Ground stitching
-- Clean routing with minimal unnecessary vias
-- Consistent trace widths
-- Design Rule Check (DRC) verification
+- Clean routing
+- Minimal unnecessary vias
+- Four-layer stackup
+- Continuous reference planes
+- Full Design Rule Check verification
 
 ---
 
@@ -227,7 +275,7 @@ During layout the following practices were used:
 ## Schematic
 
 <p align="center">
-  <img src="Images/schematic.png" width="1000">
+<img src="images/schematic.png" width="1000">
 </p>
 
 ---
@@ -237,13 +285,13 @@ During layout the following practices were used:
 ### Routed PCB
 
 <p align="center">
-  <img src="Images/pcb_layout.png" width="1000">
+<img src="images/pcb_layout.png" width="1000">
 </p>
 
 ### Routed PCB with Ground Pours
 
 <p align="center">
-  <img src="Images/pcb_layout_w_gndpours.png" width="1000">
+<img src="images/pcb_layout_w_gndpours.png" width="1000">
 </p>
 
 ---
@@ -253,59 +301,100 @@ During layout the following practices were used:
 ### 3D Render
 
 <p align="center">
-  <img src="Images/pcb_3d.png" width="800">
+<img src="images/pcb_3d.png" width="850">
 </p>
 
 ### 3D Render with Ground Pours
 
 <p align="center">
-  <img src="Images/pcb_3d_w_gndpours.png" width="800">
+<img src="images/pcb_3d_w_gndpours.png" width="850">
 </p>
 
 ---
 
-# Project Status
+# Current Status
 
-Current Status:
+- ✅ Schematic Complete
+- ✅ PCB Layout Complete
+- ✅ Four-Layer PCB
+- ✅ USB Differential Pair Routed
+- ✅ Ground Planes Implemented
+- ✅ Design Rule Check Passed
+- ✅ 3D Model Generated
+- ✅ GitHub Documentation Complete
 
-- ✔ Schematic Complete
-- ✔ PCB Layout Complete
-- ✔ Design Rule Check Passed
-- ✔ 3D Model Generated
-- ✔ GitHub Documentation Complete
+---
 
-Future Improvements:
+# Future Improvements
 
-- Firmware development
-- CAN frame decoding
-- USB CDC communication
-- PC desktop application
-- Enclosure design
-- Hardware validation and bring-up
-- Oscilloscope verification of USB and CAN signals
+- PCB Manufacturing
+- Board Bring-up
+- Firmware Development
+- USB CDC Interface
+- CAN Frame Decoder
+- Desktop GUI
+- Oscilloscope Validation
+- Enclosure Design
 
 ---
 
 # Lessons Learned
 
-This project provided practical experience with:
+This project provided hands-on experience with:
 
-- USB Type-C implementation
-- USB differential pair routing
+- USB Type-C hardware implementation
 - Controlled impedance routing
-- Four-layer PCB stackup
+- Differential pair routing
+- Four-layer PCB stackups
 - Ground plane design
-- Decoupling capacitor placement
-- Power distribution
-- CAN bus hardware
+- Decoupling strategies
+- CAN Bus hardware
 - STM32 hardware design
-- PCB Design Rule Checks
-- KiCad PCB workflow
-- DFM and DFA considerations
-- Professional PCB documentation
+- PCB floorplanning
+- PCB routing techniques
+- Power integrity
+- Signal integrity
+- Design Rule Checks (DRC)
+- Design for Manufacturability (DFM)
+- Design for Assembly (DFA)
+- Professional hardware documentation using GitHub
+
+---
+
+# Repository Structure
+
+```
+CANBUS-Sniffer-PCB/
+│
+├── README.md
+├── LICENSE
+│
+├── Hardware/
+│   ├── CAN_BUS_sniffer.kicad_pro
+│   ├── CAN_BUS_sniffer.kicad_sch
+│   ├── CAN_BUS_sniffer.kicad_pcb
+│   └── ...
+│
+├── images/
+│   ├── schematic.png
+│   ├── pcb_layout.png
+│   ├── pcb_layout_w_gndpours.png
+│   ├── pcb_3d.png
+│   └── pcb_3d_w_gndpours.png
+│
+├── Manufacturing/
+│
+└── Firmware/
+```
 
 ---
 
 # License
 
-This project is released under the MIT License.
+This project is released under the **MIT License**.
+
+---
+
+**Designed by David Valle**
+
+Electrical Engineer | PCB Design | Embedded Systems
