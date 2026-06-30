@@ -6,6 +6,67 @@ A compact **USB-to-CAN Bus interface** designed around an **STM32F0 microcontrol
 
 ---
 
+# Features
+
+- USB Type-C Interface
+- STM32F0 Microcontroller
+- CAN Bus Transceiver
+- USB 2.0 Full-Speed Differential Pair
+- 3.3V Linear Regulator
+- TVS Protection
+- Reverse Polarity Protection
+- Power LEDs
+- CAN Activity LEDs
+- SWD Programming Header
+- RESET Button
+- BOOT Button
+- Four Mounting Holes
+- Four-Layer PCB
+
+---
+
+# Project Images
+
+## PCB Layout with Ground Pours
+
+<p align="center">
+<img src="images/pcb_layout_w_gndpours.png" width="1000">
+</p>
+
+---
+
+## 3D Render with Ground Pours
+
+<p align="center">
+<img src="images/pcb_3d_w_gndpours.png" width="850">
+</p>
+
+---
+
+## Schematic
+
+<p align="center">
+<img src="images/schematic.png" width="1000">
+</p>
+
+---
+
+## Routed PCB
+
+<p align="center">
+<img src="images/pcb_layout.png" width="1000">
+</p>
+
+---
+
+## 3D Render
+
+<p align="center">
+<img src="images/pcb_3d.png" width="850">
+</p>
+
+---
+
 # Overview
 
 The goal of this project was to design a complete CAN Bus Sniffer PCB using KiCad while applying professional hardware engineering methodologies.
@@ -28,25 +89,6 @@ Topics practiced include:
 - Design Rule Checks (DRC)
 - Design for Manufacturability (DFM)
 - Design for Assembly (DFA)
-
----
-
-# Features
-
-- USB Type-C Interface
-- STM32F0 Microcontroller
-- CAN Bus Transceiver
-- USB 2.0 Full-Speed Differential Pair
-- 3.3V Linear Regulator
-- TVS Protection
-- Reverse Polarity Protection
-- Power LEDs
-- CAN Activity LEDs
-- SWD Programming Header
-- RESET Button
-- BOOT Button
-- Four Mounting Holes
-- Four-Layer PCB
 
 ---
 
@@ -99,7 +141,7 @@ Using two dedicated internal ground planes provides:
 
 USB Type-C was selected for modern compatibility and ease of use.
 
-USB CC pull-down resistors were implemented according to the USB Type-C specification to correctly identify the board as a USB device.
+USB CC pull-down resistors were implemented to correctly identify the board as a USB device.
 
 The USB D+ and D− lines were routed as a differential pair using KiCad's differential pair router.
 
@@ -116,7 +158,7 @@ Special attention was given to:
 
 ## Differential Pair Routing
 
-Although USB Full-Speed (12 Mbps) is more forgiving than USB High-Speed, the layout follows professional differential routing practices.
+Although USB Full-Speed is more forgiving than USB High-Speed, the layout follows professional differential routing practices.
 
 Design considerations included:
 
@@ -134,23 +176,17 @@ Design considerations included:
 
 Power flow:
 
+```text
 USB Type-C
-
-↓
-
+    ↓
 Protection Circuit
-
-↓
-
+    ↓
 Filtering
-
-↓
-
+    ↓
 3.3V LDO
-
-↓
-
+    ↓
 STM32 + CAN Transceiver
+```
 
 Wide power traces were used where appropriate to reduce voltage drop and improve current handling.
 
@@ -179,7 +215,7 @@ The board utilizes:
 - Bottom Ground Pour
 - Ground stitching vias
 
-This creates low impedance return paths and improves signal integrity throughout the design.
+This creates low-impedance return paths and improves signal integrity throughout the design.
 
 The exposed thermal pad underneath the STM32 is connected directly into the internal ground planes through a thermal via.
 
@@ -215,26 +251,22 @@ This minimizes:
 Components were grouped by function:
 
 ### USB Section
-
 - USB Connector
 - ESD Protection
 - CC Resistors
 
 ### Power Section
-
 - Protection
 - LDO
 - Filtering
 - LEDs
 
 ### CAN Section
-
 - CAN Connector
 - CAN Transceiver
 - Termination Components
 
 ### MCU Section
-
 - STM32
 - Crystal
 - Decoupling
@@ -267,48 +299,6 @@ The layout follows several common PCB design guidelines:
 - KiCad 9
 - STM32CubeMX
 - STM32CubeIDE
-
----
-
-# Images
-
-## Schematic
-
-<p align="center">
-<img src="images/schematic.png" width="1000">
-</p>
-
----
-
-## PCB Layout
-
-### Routed PCB
-
-<p align="center">
-<img src="images/pcb_layout.png" width="1000">
-</p>
-
-### Routed PCB with Ground Pours
-
-<p align="center">
-<img src="images/pcb_layout_w_gndpours.png" width="1000">
-</p>
-
----
-
-## 3D PCB
-
-### 3D Render
-
-<p align="center">
-<img src="images/pcb_3d.png" width="850">
-</p>
-
-### 3D Render with Ground Pours
-
-<p align="center">
-<img src="images/pcb_3d_w_gndpours.png" width="850">
-</p>
 
 ---
 
@@ -354,16 +344,16 @@ This project provided hands-on experience with:
 - PCB routing techniques
 - Power integrity
 - Signal integrity
-- Design Rule Checks (DRC)
-- Design for Manufacturability (DFM)
-- Design for Assembly (DFA)
+- Design Rule Checks
+- Design for Manufacturability
+- Design for Assembly
 - Professional hardware documentation using GitHub
 
 ---
 
 # Repository Structure
 
-```
+```text
 CANBUS-Sniffer-PCB/
 │
 ├── README.md
@@ -395,6 +385,5 @@ This project is released under the **MIT License**.
 
 ---
 
-**Designed by David Valle**
-
+**Designed by David Valle**  
 Electrical Engineer | PCB Design | Embedded Systems
