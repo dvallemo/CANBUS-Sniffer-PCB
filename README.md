@@ -1,132 +1,72 @@
 # CANBUS Sniffer
+
+A compact USB-to-CAN interface built around an STM32 microcontroller and CAN transceiver for learning high-speed PCB design, USB routing, power supply design, and embedded hardware development.
+
 **Version:** V1.0.0
-
-A four-layer STM32-based CAN bus sniffer designed as an end-to-end PCB design project to demonstrate professional hardware development practices. This project emphasizes PCB layout, signal integrity, power integrity, USB routing, CAN bus design, and manufacturability.
-
-![PCB Layout](images/pcb_layout.png)
-
-![3D Render](images/pcb_3d.png)
 
 ---
 
-# Project Goals
+# Overview
 
-The purpose of this project was to:
+The purpose of this project is to design a complete CAN Bus Sniffer PCB from schematic capture through PCB layout using professional design practices.
 
-- Design a complete embedded hardware system from schematic to PCB.
-- Practice professional PCB layout techniques.
-- Learn USB 2.0 differential pair routing.
-- Learn CAN bus hardware design.
-- Implement proper power distribution and filtering.
-- Practice Design for Manufacturability (DFM).
-- Practice Design for Assembly (DFA).
-- Build a portfolio-quality PCB project.
+The board receives power over USB Type-C, regulates the voltage to 3.3V, communicates over a CAN bus transceiver, and provides programming/debugging through an SWD interface.
+
+Rather than simply creating a functional board, the primary goal was to practice professional PCB design methodologies including:
+
+- Component placement
+- Differential pair routing
+- Power distribution
+- Ground plane implementation
+- Decoupling capacitor placement
+- Controlled impedance routing
+- Design for Manufacturability (DFM)
+- Design for Assembly (DFA)
+- Design Rule Checking (DRC)
 
 ---
 
 # Features
 
-- STM32F042 Microcontroller
-- USB Type-C Interface
-- CAN Bus Transceiver
-- 5V USB Powered
-- 3.3V Linear Regulation
-- USB ESD Protection
-- CAN Bus Termination Header
-- SWD Programming Header
-- Reset Pushbutton
-- BOOT0 Pushbutton
-- Four Mounting Holes
-- Four-Layer PCB
+- USB Type-C power input
+- STM32 microcontroller
+- CAN Bus transceiver
+- USB Full-Speed differential pair routing
+- 3.3V LDO regulator
+- Reverse polarity protection
+- TVS protection
+- Power indication LEDs
+- CAN activity LEDs
+- SWD programming header
+- RESET pushbutton
+- BOOT pushbutton
+- Four mounting holes
+- Four-layer PCB
 
 ---
 
-# Board Specifications
+# Hardware Specifications
 
-| Parameter | Value |
-|-----------|--------|
+| Item | Specification |
+|------|---------------|
+| MCU | STM32F0 Series |
+| CAN Transceiver | SN65HVD230 Compatible |
+| USB | USB Type-C (USB 2.0 Full Speed) |
+| Input Voltage | 5V USB |
+| Logic Voltage | 3.3V |
 | PCB Layers | 4 |
-| Layer Stack | Signal / GND / GND / Signal |
-| Copper Weight | 1 oz |
-| USB | USB Type-C (USB 2.0 FS) |
-| MCU Supply | 3.3V |
-| Input Supply | 5V USB |
-| Communication | CAN Bus |
-| Programming | SWD |
+| PCB Thickness | 1.6 mm |
+| Differential Pair | USB D+ / D− |
+| Mounting | 4 Mounting Holes |
 
 ---
 
-# Hardware Overview
-
-## Microcontroller
-
-STM32F042 series ARM Cortex-M0 MCU
-
-Responsibilities:
-
-- USB Device Interface
-- CAN Communication
-- Firmware Execution
-- SWD Debugging
-
----
-
-## USB Interface
-
-USB Type-C connector
-
-Features:
-
-- CC1 / CC2 pull-down resistors
-- USB differential pair routing
-- ESD protection
-- 5V power input
-
----
-
-## CAN Interface
-
-CAN transceiver connected to the STM32.
-
-Features:
-
-- CANH
-- CANL
-- Optional 120Ω termination
-- External CAN connector
-
----
-
-## Power System
-
-USB 5V input
-
-↓
-
-ESD Protection
-
-↓
-
-Filtering
-
-↓
-
-3.3V Linear Regulator
-
-↓
-
-STM32 + CAN Transceiver
-
----
-
-# PCB Design
-
-## Layer Stack
+# PCB Stackup
 
 Layer 1
 - Components
-- High-speed signals
-- Power routing
+- Signal Routing
+- USB Differential Pair
 
 Layer 2
 - Solid Ground Plane
@@ -136,155 +76,236 @@ Layer 3
 
 Layer 4
 - Signal Routing
+- Power Distribution
+
+Using two continuous internal ground planes provides:
+
+- Low impedance return paths
+- Improved signal integrity
+- Reduced EMI
+- Better high-frequency performance
+- Easier routing of USB differential pairs
 
 ---
 
-# PCB Layout Considerations
+# Design Decisions
 
-## USB Differential Pair
+## USB Type-C
 
-- Routed as matched differential pair
-- Short routing
+A USB Type-C connector was selected for modern compatibility.
+
+USB CC resistors were included to properly advertise the board as a USB device.
+
+The USB D+ and D− signals were routed as a controlled impedance differential pair using KiCad's differential pair router.
+
+Design considerations included:
+
+- Matched trace lengths
+- Constant spacing
 - Minimal discontinuities
-- Consistent spacing
+- Short routing from connector to ESD protection
+- Minimal via usage
 
 ---
 
-## Power Distribution
+## Differential Pair Routing
 
+USB Full-Speed operates at 12 Mbps.
+
+Although USB Full-Speed is less demanding than USB High-Speed, good routing practices were still followed:
+
+- Controlled impedance differential pair
+- Matched lengths
+- Constant spacing
+- Smooth 45° bends
+- Short routing distance
+- Minimal skew
+
+---
+
+## Power Supply
+
+The board receives 5V from USB.
+
+Power then passes through:
+
+USB Type-C
+
+↓
+
+Protection
+
+↓
+
+Filtering
+
+↓
+
+3.3V LDO
+
+↓
+
+STM32 + CAN Transceiver
+
+Separate filtering and decoupling were added for improved power integrity.
+
+---
+
+## Decoupling Strategy
+
+Each power pin is locally decoupled using ceramic capacitors placed as close as possible to the IC supply pins.
+
+Goals:
+
+- Reduce switching noise
+- Supply transient current
+- Improve power stability
+- Reduce EMI
+
+---
+
+## CAN Interface
+
+The CAN transceiver converts the STM32 CAN peripheral into differential CANH/CANL signals.
+
+Features include:
+
+- Differential signaling
+- CAN termination option
+- Noise immunity
+- Automotive compatible interface
+
+---
+
+## Grounding Strategy
+
+The design uses:
+
+- Internal Ground Plane (Layer 2)
+- Internal Ground Plane (Layer 3)
+- Top Ground Pour
+- Bottom Ground Pour
+- Via stitching
+
+Benefits include:
+
+- Continuous return paths
+- Lower ground impedance
+- Improved EMC
+- Better thermal performance
+
+The STM32 exposed ground pad is connected directly into the internal ground planes through a dedicated thermal via.
+
+---
+
+# PCB Design Considerations
+
+During layout the following practices were used:
+
+- Functional component grouping
+- Short crystal routing
+- Short decoupling paths
 - Wide power traces
-- Local decoupling
-- Filtered 3.3V rail
-- Short regulator output path
-
----
-
-## Crystal Placement
-
-- Crystal placed immediately adjacent to MCU
-- Short OSC_IN / OSC_OUT traces
-- Symmetric routing
-
----
-
-## Decoupling
-
-100nF capacitors placed close to VDD pins.
-
-Power traces kept short to minimize loop inductance.
-
----
-
-## Grounding
-
-- Dual internal solid ground planes
-- Exposed thermal pad connected to ground
-- Ground pours on outer layers
-- Ground stitching vias
-
----
-
-# Design Practices Used
-
 - Differential pair routing
-- Controlled impedance routing
-- Ground return optimization
-- Decoupling capacitor placement
-- USB layout guidelines
-- CAN layout guidelines
-- DFM
-- DFA
-- Four-layer stackup
-- ERC / DRC verification
+- Ground stitching
+- Clean routing with minimal unnecessary vias
+- Consistent trace widths
+- Design Rule Check (DRC) verification
 
 ---
 
-# Software
-
-Designed using:
+# Software Used
 
 - KiCad 9
+- STM32CubeMX
+- STM32CubeIDE
 
 ---
 
-# Manufacturing
+# Images
 
-Designed for standard PCB fabrication.
+## Schematic
 
-Typical fabrication capabilities:
-
-- 4 Layers
-- 0.15 mm trace/space
-- 0.30 mm drill
-- ENIG or HASL finish
+<p align="center">
+  <img src="Images/schematic.png" width="1000">
+</p>
 
 ---
 
-# Repository Structure
+## PCB Layout
 
-```
-CANBUS_Sniffer/
-│
-├── Hardware/
-│   ├── Schematic/
-│   ├── PCB/
-│   ├── Gerbers/
-│   ├── BOM/
-│   ├── PickAndPlace/
-│   └── Assembly_Drawings/
-│
-├── Firmware/
-│
-├── Images/
-│   ├── pcb_layout.png
-│   ├── pcb_3d.png
-│   └── schematic.png
-│
-└── README.md
-```
+### Routed PCB
+
+<p align="center">
+  <img src="Images/pcb_layout.png" width="1000">
+</p>
+
+### Routed PCB with Ground Pours
+
+<p align="center">
+  <img src="Images/pcb_layout_w_gndpours.png" width="1000">
+</p>
 
 ---
 
-# Future Improvements
+## 3D PCB
 
-- Firmware implementation
-- USB CDC interface
-- CAN packet decoding
-- CAN logging to PC
-- Timestamping
-- Bootloader support
-- CAN FD support (future hardware revision)
-- Additional status LEDs
+### 3D Render
+
+<p align="center">
+  <img src="Images/pcb_3d.png" width="800">
+</p>
+
+### 3D Render with Ground Pours
+
+<p align="center">
+  <img src="Images/pcb_3d_w_gndpours.png" width="800">
+</p>
+
+---
+
+# Project Status
+
+Current Status:
+
+- ✔ Schematic Complete
+- ✔ PCB Layout Complete
+- ✔ Design Rule Check Passed
+- ✔ 3D Model Generated
+- ✔ GitHub Documentation Complete
+
+Future Improvements:
+
+- Firmware development
+- CAN frame decoding
+- USB CDC communication
+- PC desktop application
+- Enclosure design
+- Hardware validation and bring-up
+- Oscilloscope verification of USB and CAN signals
 
 ---
 
 # Lessons Learned
 
-This project provided hands-on experience with:
+This project provided practical experience with:
 
-- Professional PCB design workflow
 - USB Type-C implementation
-- CAN hardware design
-- Differential pair routing
+- USB differential pair routing
+- Controlled impedance routing
 - Four-layer PCB stackup
-- Signal integrity fundamentals
-- Power integrity
-- Component placement optimization
-- KiCad workflow
-- PCB design review and debugging
+- Ground plane design
+- Decoupling capacitor placement
+- Power distribution
+- CAN bus hardware
+- STM32 hardware design
+- PCB Design Rule Checks
+- KiCad PCB workflow
+- DFM and DFA considerations
+- Professional PCB documentation
 
 ---
 
 # License
 
 This project is released under the MIT License.
-
----
-
-# Author
-
-**David Valle**
-
-Electrical Engineer
-
-Designed as part of a professional hardware engineering portfolio focused on embedded systems, PCB design, and robotics.
